@@ -1,13 +1,17 @@
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebResponse;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 class PageParser {
@@ -33,13 +37,38 @@ class PageParser {
         }
         WebResponse response = page.getWebResponse();
         content = response.getContentAsString();
-
+        System.out.println(content);
         PageParser.writeIntoFile("C:\\temp\\1111.txt", content);
     }
 
     void fileParse(){
-        String[] st = content.split("\\n");
-        System.out.println(st.length);
+        Document doc = Jsoup.parse(content);
+        Elements links = doc.select("a[href]");
+        List<String> lst = new ArrayList<>();
+        List<String> lst2 = new ArrayList<>();
+        for (Element link : links) {
+            if(link.attr("href") != null && link.attr("href").contains("http://")) {
+                lst.add(link.attr("href"));
+                try {
+                    lst2.add(getHostName(link.attr("href")));
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        System.out.println(lst);
+        System.out.println(lst2);
+
+    }
+
+    private static String getHostName(String url) throws URISyntaxException {
+        URI uri = new URI(url);
+        String hostname = uri.getHost();
+        // to provide faultproof result, check if not null then return only hostname, without www.
+        if (hostname != null) {
+            return hostname.startsWith("www.") ? hostname.substring(4) : hostname;
+        }
+        return null;
     }
 
     /**
