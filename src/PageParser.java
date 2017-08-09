@@ -8,8 +8,7 @@ import org.jsoup.select.Elements;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -46,6 +45,8 @@ class PageParser {
         Elements links = doc.select("a[href]");
         List<String> lst = new ArrayList<>();
         List<String> lst2 = new ArrayList<>();
+        Set<String> set1;
+        Map<String, Integer> map1 = new HashMap<>();
         for (Element link : links) {
             if(link.attr("href") != null && link.attr("href").contains("http://")) {
                 lst.add(link.attr("href"));
@@ -56,9 +57,16 @@ class PageParser {
                 }
             }
         }
+        set1 = new HashSet<>(lst2);
+        for (String x: set1) {
+            int occurrences = Collections.frequency(lst2, x);
+            map1.put(x, occurrences);
+        }
         System.out.println(lst);
+        System.out.println("lst size: " + lst.size());
         System.out.println(lst2);
-
+        System.out.println(set1);
+        System.out.println(map1);
     }
 
     private static String getHostName(String url) throws URISyntaxException {
