@@ -10,6 +10,6 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Problem with downloading page: " + e);
         }
-        page2.writeIntoFile(fileName);
+        //page2.writeIntoFile(fileName);
     }
 }

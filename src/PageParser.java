@@ -6,11 +6,13 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 class PageParser {
     private String pageURL;
-    private StringBuilder sourceHtmlStringBuilder;
+    private String content;
 
     PageParser(String url) {
         pageURL = url;
@@ -30,21 +32,27 @@ class PageParser {
             page = webClient.getPage("http://" + pageURL);
         }
         WebResponse response = page.getWebResponse();
-        String content = response.getContentAsString();
-        sourceHtmlStringBuilder = new StringBuilder(content);
+        content = response.getContentAsString();
+
+        PageParser.writeIntoFile("C:\\temp\\1111.txt", content);
+    }
+
+    void fileParse(){
+        String[] st = content.split("\\n");
+        System.out.println(st.length);
     }
 
     /**
      * Method for writing HTML source code int text file
      */
-    void writeIntoFile(String sourceHtmlFileName) {
+    private static void writeIntoFile(String sourceHtmlFileName, String st) {
         BufferedWriter bw = null;
         FileWriter fw = null;
         try {
             fw = new FileWriter(sourceHtmlFileName);
 
             bw = new BufferedWriter(fw);
-            bw.write(sourceHtmlStringBuilder.toString());
+            bw.write(st);
         } catch (FileNotFoundException e) {
             System.out.print("File " + sourceHtmlFileName + " not found!");
         } catch (IOException e) {
