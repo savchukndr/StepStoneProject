@@ -1,16 +1,15 @@
 import java.io.IOException;
 
 public class Main {
-    private static String fileName = "C:\\temp\\1111.txt";
 
     public static void main(String[] args) {
-        PageParser page2 = new PageParser("wawalove.pl/");
+        PageParser page = new PageParser("http://wawalove.pl");
         try {
-            page2.getWebPageSource();
+            page.getWebPageSource();
         } catch (IOException e) {
             System.out.println("Problem with downloading page: " + e);
         }
-        page2.fileParse();
-        //page2.writeIntoFile(fileName);
+        page.contentParse();
+        page.printResult();
     }
 }
