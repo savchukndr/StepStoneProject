@@ -23,14 +23,14 @@ import java.util.*;
 import java.util.logging.Level;
 
 /**
- * Class PageParser consisted of methods for
+ * The PageParser class consisted of methods for
  * parsing web site and getting links amount from
  * "href" attribute in "a" tag.
  */
 class PageParser {
-    private String mPageURL;
-    private String mContentHtml;
-    private Map<String, Integer> mHrefLinksMap;
+    private String mPageURL; /* web page url */
+    private String mContentHtml; /* html content */
+    private Map<String, Integer> mHrefLinksMap; /* parsed links map */
 
     /**
      * Constructor for class PageParser.
@@ -46,10 +46,10 @@ class PageParser {
      * given URL.
      *
      * @param url Given URL.
+     * @return Host name.
      * @throws URISyntaxException Throws exception if
      *                            there is a problem in
      *                            in URI syntax.
-     * @return Host name.
      * @see URISyntaxException
      */
     private String getHostName(String url) throws URISyntaxException {
@@ -65,13 +65,13 @@ class PageParser {
      * Method for getting HTML source code from
      * current page URL using HtmlUnit framework.
      *
+     * @return Nothing.
      * @throws IOException Throws exception if
      *                     if there are problems
      *                     with downloading pages.
-     * @return Nothing.
      * @see IOException
      */
-    void getWebPageSource()throws IOException{
+    void getWebPageSource() throws IOException {
         WebClient webClient;
         webClient = new WebClient();
         ignoreException(webClient);
@@ -83,7 +83,6 @@ class PageParser {
         }
         WebResponse response = page.getWebResponse();
         mContentHtml = response.getContentAsString();
-
     }
 
     /**
@@ -98,25 +97,25 @@ class PageParser {
         Set<String> hrefUniqueLinksSet;
         try {
             doc = Jsoup.parse(mContentHtml);
-            Elements links = doc.select("a[href]");
+            Elements links = doc.select("a[href]"); /* get links from "href" attribute in a "a" teg */
 
             hrefLinksList = new ArrayList<>();
             mHrefLinksMap = new HashMap<>();
             for (Element link : links) {
                 if (link.attr("href") != null && link.attr("href").contains("http://")) {
                     try {
-                        hrefLinksList.add(getHostName(link.attr("href")));
+                        hrefLinksList.add(getHostName(link.attr("href"))); /* add links into hrefLinksList */
                     } catch (URISyntaxException exception) {
                         System.out.println("URI Syntax exception: " + exception);
                     }
                 }
             }
-            hrefUniqueLinksSet = new HashSet<>(hrefLinksList);
+            hrefUniqueLinksSet = new HashSet<>(hrefLinksList); /* get a set of unique links */
             for (String mapElem : hrefUniqueLinksSet) {
                 int occurrences = Collections.frequency(hrefLinksList, mapElem);
-                mHrefLinksMap.put(mapElem, occurrences);
+                mHrefLinksMap.put(mapElem, occurrences); /* mapping links and their amount */
             }
-        }catch (IllegalArgumentException exception){
+        } catch (IllegalArgumentException exception) {
             System.out.println("String cannot be null.");
         }
     }
@@ -127,8 +126,8 @@ class PageParser {
      * @return Nothing
      */
     void printResult() {
-        contentParse();
-        if(mHrefLinksMap != null) {
+        contentParse(); /* start parsing html content*/
+        if (mHrefLinksMap != null) {
             for (Map.Entry entry : mHrefLinksMap.entrySet()) {
                 System.out.println("• " + entry.getKey() + " - " + entry.getValue());
             }
@@ -143,8 +142,11 @@ class PageParser {
      *                  for this web client.
      * @return Nothing.
      */
-    private void ignoreException(WebClient webClient){
-        webClient.setIncorrectnessListener((arg0, arg1) -> {});
+    private void ignoreException(WebClient webClient) {
+
+        /* HtmlUnit exception and warning ignore code */
+        webClient.setIncorrectnessListener((arg0, arg1) -> {
+        });
         webClient.setCssErrorHandler(new ErrorHandler() {
 
             @Override
@@ -219,6 +221,7 @@ class PageParser {
         webClient.getOptions().setPrintContentOnFailingStatusCode(false);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
 
+        /* HtmlUnit logs turning off code */
         LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
         java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
         java.util.logging.Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.OFF);
