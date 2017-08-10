@@ -22,7 +22,7 @@ public class Main {
      * @see IOException
      */
     public static void main(String[] args) {
-        String webPage = "http://premiummobile.pl/"; /* input here web page link */
+        String webPage = "http://wawalove.pl"; /* input here web page link */
         PageParser pagePar = new PageParser(webPage);
         try {
             System.out.println("Start parsing web page: " + webPage + ".");
