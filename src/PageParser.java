@@ -28,7 +28,7 @@ import java.util.logging.Level;
  * "href" attribute in "a" tag.
  */
 class PageParser {
-    private String mPageURL; /* web page url */
+    private String mPageUrl; /* web page url */
     private String mContentHtml; /* html content */
     private Map<String, Integer> mHrefLinksMap; /* parsed links map */
 
@@ -38,7 +38,7 @@ class PageParser {
      * @param url Gets web site URL.
      */
     PageParser(String url) {
-        mPageURL = url;
+        mPageUrl = url;
     }
 
     /**
@@ -77,9 +77,9 @@ class PageParser {
         ignoreException(webClient);
         Page page;
         try {
-            page = webClient.getPage(mPageURL);
+            page = webClient.getPage(mPageUrl);
         } catch (MalformedURLException exception) {
-            page = webClient.getPage("http://" + mPageURL);
+            page = webClient.getPage("http://" + mPageUrl);
         }
         WebResponse response = page.getWebResponse();
         mContentHtml = response.getContentAsString();
